@@ -1,6 +1,8 @@
 package com.example.androidbeacon;
 
 import android.app.Activity;
+import android.bluetooth.le.AdvertiseCallback;
+import android.bluetooth.le.AdvertiseSettings;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +26,7 @@ public class OpenBeacon extends Activity implements MonitorNotifier {
     protected String name = "name";
 
     TextView m_textview;
+    TextView m_textResult;
 
 
     @Override
@@ -48,6 +51,7 @@ public class OpenBeacon extends Activity implements MonitorNotifier {
     private void initialComponent() {
         //component
         m_textview = (TextView) findViewById(R.id.textView_oprnbeacon);
+        m_textResult = (TextView) findViewById(R.id.BLEresult);
     }
 
 
@@ -66,8 +70,16 @@ public class OpenBeacon extends Activity implements MonitorNotifier {
                 .setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"); //ibeacon -> 0215
 
         BeaconTransmitter beaconTransmitter = new BeaconTransmitter(getApplicationContext(), beaconParser);
-        beaconTransmitter.startAdvertising(beacon);
-
+        beaconTransmitter.startAdvertising(beacon, new AdvertiseCallback() {
+            @Override
+            public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+                m_textResult.setText("是否開啟Beacon: "+"成功開啟!");
+            }
+            @Override
+            public void onStartFailure(int errorCode) {
+                m_textResult.setText("是否開啟Beacon: "+"目前無開啟!");
+            }
+        });
     }
 
     @Override
