@@ -37,6 +37,7 @@ public class OpenBeacon extends Activity implements MonitorNotifier {
         initialComponent();
 
         intent_get();
+
     }
 
     private void intent_get() {
@@ -64,10 +65,11 @@ public class OpenBeacon extends Activity implements MonitorNotifier {
                 .setId3(minor)
                 .setManufacturer(0x004C) // Radius Networks.  Change this for other beacon layouts
                 .setTxPower(-40)
-                .setDataFields(Arrays.asList(new Long[]{0l})) // Remove this for beacon layouts without d: fields
                 .build();
         BeaconParser beaconParser = new BeaconParser()
-                .setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"); //ibeacon -> 0215
+                .setBeaconLayout("i:2-17,i:18-19,i:20-21,p:22-22"); //ibeacon -> m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24
+
+                //https://stackoverflow.com/questions/33594197/altbeacon-setbeaconlayout
 
         BeaconTransmitter beaconTransmitter = new BeaconTransmitter(getApplicationContext(), beaconParser);
         beaconTransmitter.startAdvertising(beacon, new AdvertiseCallback() {
@@ -80,6 +82,11 @@ public class OpenBeacon extends Activity implements MonitorNotifier {
                 m_textResult.setText("是否開啟Beacon: "+"目前無開啟!");
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override
